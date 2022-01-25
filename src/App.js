@@ -26,8 +26,8 @@ function App() {
   const loadBlockchainData = async () => {
     const web3 = window.web3
     const networkId = await web3.eth.net.getId()
-    if (networkId !== 4) {
-      window.alert('Please switch network to the Rinkeby and refresh the page')
+    if (networkId !== 3) {
+      window.alert('Please switch network to the Ropsten and refresh the page')
     }
     const networkData = DrawingCollectible.networks[networkId];
     if (networkData) {

@@ -8,12 +8,11 @@ module.exports = {
       port: 7545,
       network_id: "*" // Match any network id
     },
-    rinkeby: {
+    ropsten: {
       provider: function () {
-        return new HDWalletProvider(mnemonic, "https://rinkeby.infura.io/v3/ecbf686ae5b0402da81aa956d80dde6f");
+        return new HDWalletProvider(mnemonic, "https://ropsten.infura.io/v3/8f9ca5ce84ab44458983edd3b707c4e2");
       },
-      network_id: 4,
-
+      network_id: 3,
     }
   },
   contracts_build_directory: './src/abis/',
