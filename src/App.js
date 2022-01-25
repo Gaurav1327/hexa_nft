@@ -2,15 +2,13 @@ import React, { useState, useEffect } from 'react';
 import Web3 from 'web3'
 import DrawingCollectible from './abis/DrawingCollectible.json'
 import CanvasComponent from './getTwitterDP'
+import { Container } from "@mui/material";
+import './App.css'
 
 function App() {
 
   const [deployedContract, setDeployedContract] = useState();
   const [account, setAccount] = useState();
-  const [balance, setBalance] = useState();
-  const [name, setName] = useState();
-  const [symbol, setSymbol] = useState();
-
 
   const loadWeb3 = async () => {
     if (window.ethereum) {
@@ -38,14 +36,6 @@ function App() {
       setDeployedContract(contract);
       const accounts = await web3.eth.getAccounts();
       setAccount(accounts[0])
-      const bal = await web3.eth.getBalance(accounts[0]);
-      setBalance(bal);
-      contract.methods.name().call(function (err, res) {
-        setName(res)
-      });
-      contract.methods.symbol().call(function (err, res) {
-        setSymbol(res)
-      });
     } else {
       alert("Wrong NETWORK")
     }
@@ -60,17 +50,15 @@ function App() {
   }, []);
 
   return (
+    <Container>
     <div className="App">
-      <p>Deployed Contract's Address: <b>{deployedContract?._address}</b> </p>
-      <p>My Metamask Account: <b>{account} </b></p>
-      <p>My Balance: <b>{balance}</b> </p>
-      <p>Deployed Contract's Name / Symbol:<b> {name}/{symbol} </b></p>
-
+      <h1>HexagoniFy your Twitter DP</h1>
       <CanvasComponent
         deployedContract={deployedContract}
         account={account}
       />
     </div>
+    </Container>
   );
 }
 
