@@ -1,9 +1,8 @@
 pragma solidity 0.6.6;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract DrawingCollectible is ERC721, Ownable {
+contract DrawingCollectible is ERC721 {
     uint256 public tokenCounter;
 
     constructor() public ERC721("HexagonalNFT", "HEXNFT") {
@@ -12,7 +11,6 @@ contract DrawingCollectible is ERC721, Ownable {
 
     function createCollectible(string memory tokenURI)
         public
-        onlyOwner
         returns (uint256)
     {
         uint256 newItemId = tokenCounter;

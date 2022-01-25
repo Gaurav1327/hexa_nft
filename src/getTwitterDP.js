@@ -1,16 +1,11 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import metadata from "./metadata.js";
-
-//Declare IPFS
-//const ipfsClient = require('ipfs-http-client')
-//const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
 
 const ipfsAPI = require("ipfs-api");
 const ipfs = ipfsAPI("ipfs.infura.io", "5001", { protocol: "https" });
 
 const INFURA_HTTPS = "https://ipfs.infura.io/ipfs/";
-const WIDTH = 600;
-const HEIGHT = 400;
+
 
 function drawImageProp(ctx, img, x, y, w, h, offsetX, offsetY) {
   if (arguments.length === 2) {
@@ -70,12 +65,7 @@ var Draw = function (url) {
 
   ctx.fillStyle = "white";
   ctx.fillRect(0, 0, c.width, c.height);
-  // Our guide circle to make sure the image fits
-  /*
-    ctx.beginPath();
-    ctx.arc(250, 250, 250, 0, 2 * Math.PI);
-    ctx.stroke();
-    */
+
 
   ctx.scale(2.5, 2.5);
   let p = new Path2D(
@@ -103,57 +93,45 @@ var Draw = function (url) {
 const CanvasComponent = ({ deployedContract, account }) => {
   const [isImg, setIsImg] = useState(false);
   const [profile, setProfile] = useState("");
-  const toDataURL = (url) =>
-    fetch(url)
-      .then((response) => response.blob())
-      .then(
-        (blob) =>
-          new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result);
-            reader.onerror = reject;
-            reader.readAsDataURL(blob);
-          })
-      );
 
   const download = async () => {
-      Draw("https://unavatar.io/twitter/" + profile)
+    Draw("https://unavatar.io/twitter/" + profile);
   };
 
-  const downloadNft = async() => {
-    const dataUrl =document.getElementById('myCanvas').toDataURL();
+  const downloadNft = async () => {
+    const dataUrl = document.getElementById("myCanvas").toDataURL();
     const buffer = Buffer(dataUrl.split(",")[1], "base64");
-      console.log(buffer);
-      ipfs.files.add(buffer, (error, result) => {
-        if (result) {
-          metadata.name = profile;
-          metadata.image = INFURA_HTTPS + result[0].hash;
-          console.log("image uploaded to IPFS image URI:" + metadata.image);
-          console.log(metadata);
-          let metadataBuffer = Buffer.from(JSON.stringify(metadata));
-          ipfs.files.add(metadataBuffer, (error, secondResult) => {
-            if (secondResult) {
-              const tokenURI = INFURA_HTTPS + secondResult[0].hash;
-              console.log(
-                "Metadata uploaded to IPFS image as JSON URI:" + tokenURI
-              );
-              deployedContract.methods
-                .createCollectible(tokenURI)
-                .send({ from: account })
-                .on("transactionHash", (hash) => {
-                  console.log("success, transction hash: ", hash);
-                });
-            }
-            if (error) {
-              console.log(error);
-            }
-          });
-        }
-        if (error) {
-          console.log(error);
-        }
-      });
-  }
+    console.log(buffer);
+    ipfs.files.add(buffer, (error, result) => {
+      if (result) {
+        metadata.name = profile;
+        metadata.image = INFURA_HTTPS + result[0].hash;
+        console.log("image uploaded to IPFS image URI:" + metadata.image);
+        console.log(metadata);
+        let metadataBuffer = Buffer.from(JSON.stringify(metadata));
+        ipfs.files.add(metadataBuffer, (error, secondResult) => {
+          if (secondResult) {
+            const tokenURI = INFURA_HTTPS + secondResult[0].hash;
+            console.log(
+              "Metadata uploaded to IPFS image as JSON URI:" + tokenURI
+            );
+            deployedContract.methods
+              .createCollectible(tokenURI)
+              .send({ from: account })
+              .on("transactionHash", (hash) => {
+                console.log("success, transction hash: ", hash);
+              });
+          }
+          if (error) {
+            console.log(error);
+          }
+        });
+      }
+      if (error) {
+        console.log(error);
+      }
+    });
+  };
   return (
     <div>
       <div width="500px" height="500px">
