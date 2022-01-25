@@ -53,7 +53,7 @@ function App() {
     <Container>
     <div className="App">
       <h1>HexagoniFy your Twitter DP</h1>
-      <CanvasComponent
+      <p>Address: <b>{deployedContract?._address}</b> </p>      <CanvasComponent
         deployedContract={deployedContract}
         account={account}
       />
