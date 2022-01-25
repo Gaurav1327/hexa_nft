@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import metadata from "./metadata.js";
-import { TextField, Button, Snackbar } from "@mui/material";
+import { TextField, Button, Snackbar, LinearProgress } from "@mui/material";
 import "./App.css";
 
 const ipfsAPI = require("ipfs-api");
@@ -71,6 +71,7 @@ function drawImageProp(ctx, img, x, y, w, h, offsetX, offsetY) {
 const CanvasComponent = ({ deployedContract, account }) => {
   const [profile, setProfile] = useState("");
   const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState(false)
 
   const Draw = function (url) {
@@ -97,6 +98,7 @@ const CanvasComponent = ({ deployedContract, account }) => {
     img.addEventListener(
       "load",
       function () {
+        setLoading(false)
         setOpen(true)
         setMessage("Fetched Image")
         document.getElementById("mint").style.display = "block";
@@ -108,7 +110,8 @@ const CanvasComponent = ({ deployedContract, account }) => {
   };
   
   const download = async () => {
-    Draw("https://unavatar.io/twitter/" + profile, );
+    setLoading(true)
+    Draw("https://unavatar.io/twitter/" + profile );
   };
 
   const downloadNft = async () => {
@@ -157,10 +160,11 @@ const CanvasComponent = ({ deployedContract, account }) => {
   return (
     <div>
       <div className="group">
+    {loading && <LinearProgress/>}
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         open={open}
-        autoHideDuration={5000}
+        autoHideDuration={3000}
         onClose={handleClose}
         message={message}
       />
